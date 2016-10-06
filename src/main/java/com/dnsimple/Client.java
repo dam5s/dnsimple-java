@@ -147,6 +147,9 @@ public class Client {
         if (in == null) {
             try {
                 res = (ApiResponse) c.newInstance();
+            // The catch below uses a class type only available in java 1.7
+            // The pom.xml specifies code compatibility with 1.6
+            // This will not work on Java 6.
             } catch (ReflectiveOperationException e) {
                 throw new RuntimeException("Cannot instantiate " + c, e);
             }

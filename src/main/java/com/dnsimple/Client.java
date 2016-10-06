@@ -12,8 +12,9 @@ import io.mikael.urlbuilder.UrlBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Map;
+
+import static java.util.Collections.emptyMap;
 
 /**
  * Instances of the Client handle low-level HTTP calls to the API.
@@ -21,6 +22,7 @@ import java.util.Map;
 public class Client {
 
     private static final String API_VERSION_PATH = "/v2/";
+    private static final Map<String, Object> EMPTY_MAP = emptyMap();
 
     public final Accounts accounts;
     public final Certificates certificates;
@@ -34,6 +36,7 @@ public class Client {
     public final Tlds tlds;
     public final VanityNameServers vanityNameServers;
     public final Webhooks webhooks;
+
     public final Zones zones;
 
     private HttpTransport transport;
@@ -80,7 +83,7 @@ public class Client {
 
 
     protected HttpResponse get(String path) throws DnsimpleException, IOException {
-        return get(path, null);
+        return get(path, EMPTY_MAP);
     }
 
     protected HttpResponse get(String path, Map<String, Object> options) throws DnsimpleException, IOException {
@@ -88,44 +91,44 @@ public class Client {
     }
 
     protected HttpResponse post(String path) throws DnsimpleException, IOException {
-        return post(path, null);
+        return post(path, EMPTY_MAP);
     }
 
     protected HttpResponse post(String path, Map<String, Object> attributes) throws DnsimpleException, IOException {
-        return post(path, attributes, null);
+        return post(path, attributes, EMPTY_MAP);
     }
 
     protected HttpResponse post(String path, Map<String, Object> attributes, Map<String, Object> options) throws DnsimpleException, IOException {
-        return request(HttpMethods.POST, versionedPath(path), attributes, null);
+        return request(HttpMethods.POST, versionedPath(path), attributes, options);
     }
 
     protected HttpResponse put(String path) throws DnsimpleException, IOException {
-        return put(path, null);
+        return put(path, EMPTY_MAP);
     }
 
     protected HttpResponse put(String path, Object attributes) throws DnsimpleException, IOException {
-        return put(path, attributes, null);
+        return put(path, attributes, EMPTY_MAP);
     }
 
     protected HttpResponse put(String path, Object attributes, Map<String, Object> options) throws DnsimpleException, IOException {
-        return request(HttpMethods.PUT, versionedPath(path), attributes, null);
+        return request(HttpMethods.PUT, versionedPath(path), attributes, EMPTY_MAP);
     }
 
     protected HttpResponse patch(String path, Object attributes) throws DnsimpleException, IOException {
-        return patch(path, attributes, null);
+        return patch(path, attributes, EMPTY_MAP);
     }
 
     protected HttpResponse patch(String path, Object attributes, Map<String, Object> options) throws DnsimpleException, IOException {
-        return request(HttpMethods.PATCH, versionedPath(path), attributes, null);
+        return request(HttpMethods.PATCH, versionedPath(path), attributes, options);
     }
 
 
     protected HttpResponse delete(String path) throws DnsimpleException, IOException {
-        return delete(path, null);
+        return delete(path, EMPTY_MAP);
     }
 
     protected HttpResponse delete(String path, Map<String, Object> options) throws DnsimpleException, IOException {
-        return request(HttpMethods.DELETE, versionedPath(path), null, null);
+        return request(HttpMethods.DELETE, versionedPath(path), null, options);
     }
 
 
@@ -183,10 +186,6 @@ public class Client {
     }
 
     private GenericUrl buildUrl(String url, Map<String, Object> options) {
-        if (options == null) {
-            options = Collections.emptyMap();
-        }
-
         UrlBuilder urlBuilder = UrlBuilder.fromString(url);
         if (options.containsKey("filter")) {
             Filter filter = (Filter) options.remove("filter");

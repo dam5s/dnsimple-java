@@ -4,6 +4,7 @@ import com.google.api.client.http.HttpResponseException;
 
 public class DnsimpleException extends Exception {
 
+  // These fields are private, do not have accessors, and are not used.
   private String requestId;
   private Integer statusCode;
 

@@ -13,60 +13,55 @@ import java.io.IOException;
 import java.util.List;
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
-import com.google.api.client.http.HttpMethods;
-import com.google.api.client.util.Data;
 
 public class ZonesTest extends DnsimpleTestBase {
 
   @Test
   public void testListZonesSupportsPagination() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/zones?page=1");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/zones?page=1");
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("page", 1);
-    client.zones.listZones(accountId, options);
+    httpClient.zones.listZones(accountId, options);
   }
 
   @Test
   public void testListZonesSupportsExtraRequestOptions() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/zones?foo=bar");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/zones?foo=bar");
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("foo", "bar");
-    client.zones.listZones(accountId, options);
+    httpClient.zones.listZones(accountId, options);
   }
 
   @Test
   public void testListDomainsSupportsSorting() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/zones?sort=expires_on%3Aasc");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/zones?sort=expires_on%3Aasc");
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("sort", "expires_on:asc");
-    client.zones.listZones(accountId, options);
+    httpClient.zones.listZones(accountId, options);
   }
 
   @Test
   public void testListZonesSupportsFiltering() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/zones?name_like=example");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/zones?name_like=example");
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("filter", new Filter("name_like", "example"));
-    client.zones.listZones(accountId, options);
+    httpClient.zones.listZones(accountId, options);
   }
 
   @Test
   public void testListZonesProducesZoneList() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("listZones/success.http"));
+    HttpClient httpClient = mockClient(resource("listZones/success.http"));
 
     String accountId = "1";
 
-    ListZonesResponse response = client.zones.listZones(accountId);
+    ListZonesResponse response = httpClient.zones.listZones(accountId);
 
     List<Zone> zones = response.getData();
     assertEquals(2, zones.size());
@@ -75,11 +70,11 @@ public class ZonesTest extends DnsimpleTestBase {
 
   @Test
   public void testListZonesExposesPaginationInfo() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("listZones/success.http"));
+    HttpClient httpClient = mockClient(resource("listZones/success.http"));
 
     String accountId = "1";
 
-    ListZonesResponse response = client.zones.listZones(accountId);
+    ListZonesResponse response = httpClient.zones.listZones(accountId);
 
     Pagination pagination = response.getPagination();
     assertEquals(1, pagination.getCurrentPage().intValue());
@@ -87,12 +82,12 @@ public class ZonesTest extends DnsimpleTestBase {
 
   @Test
   public void testGetZone() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("getZone/success.http"));
+    HttpClient httpClient = mockClient(resource("getZone/success.http"));
 
     String accountId = "1";
     String zoneId = "example.com";
 
-    GetZoneResponse response = client.zones.getZone(accountId, zoneId);
+    GetZoneResponse response = httpClient.zones.getZone(accountId, zoneId);
 
     Zone zone = response.getData();
     assertEquals(1, zone.getId().intValue());
@@ -104,22 +99,22 @@ public class ZonesTest extends DnsimpleTestBase {
 
   @Test(expected=ResourceNotFoundException.class)
   public void testGetZoneWhenZoneNotFound() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("notfound-zone.http"));
+    HttpClient httpClient = mockClient(resource("notfound-zone.http"));
 
     String accountId = "1";
     String zoneId = "example.com";
 
-    client.zones.getZone(accountId, zoneId);
+    httpClient.zones.getZone(accountId, zoneId);
   }
 
   @Test
   public void testGetZoneFile() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("getZoneFile/success.http"));
+    HttpClient httpClient = mockClient(resource("getZoneFile/success.http"));
 
     String accountId = "1";
     String zoneId = "example.com";
 
-    GetZoneFileResponse response = client.zones.getZoneFile(accountId, zoneId);
+    GetZoneFileResponse response = httpClient.zones.getZoneFile(accountId, zoneId);
 
     ZoneFile zoneFile = response.getData();
     assertEquals("$ORIGIN example.com.\n$TTL 1h\nexample.com. 3600 IN SOA ns1.dnsimple.com. admin.dnsimple.com. 1453132552 86400 7200 604800 300\nexample.com. 3600 IN NS ns1.dnsimple.com.\nexample.com. 3600 IN NS ns2.dnsimple.com.\nexample.com. 3600 IN NS ns3.dnsimple.com.\nexample.com. 3600 IN NS ns4.dnsimple.com.\n", zoneFile.getZone());
@@ -127,11 +122,11 @@ public class ZonesTest extends DnsimpleTestBase {
 
   @Test(expected=ResourceNotFoundException.class)
   public void testGetZoneFileWhenZoneNotFound() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("notfound-zone.http"));
+    HttpClient httpClient = mockClient(resource("notfound-zone.http"));
 
     String accountId = "1";
     String zoneId = "example.com";
 
-    client.zones.getZoneFile(accountId, zoneId);
+    httpClient.zones.getZoneFile(accountId, zoneId);
   }
 }

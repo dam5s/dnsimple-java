@@ -14,57 +14,54 @@ import java.io.IOException;
 import java.util.List;
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 import com.google.api.client.http.HttpMethods;
-import com.google.api.client.util.Data;
 
 public class TemplatesTest extends DnsimpleTestBase {
 
   @Test
   public void testListTemplatesSupportsPagination() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/templates?page=1");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/templates?page=1");
 
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
 
     options.put("page", 1);
-    client.templates.listTemplates(accountId, options);
+    httpClient.templates.listTemplates(accountId, options);
   }
 
   @Test
   public void testListTemplatesSupportsExtraRequestOptions() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/templates?foo=bar");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/templates?foo=bar");
 
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("foo", "bar");
 
-    client.templates.listTemplates(accountId, options);
+    httpClient.templates.listTemplates(accountId, options);
   }
 
   @Test
   public void testListTemplatesSupportsSorting() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/templates?sort=name%3Aasc");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/templates?sort=name%3Aasc");
 
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("sort", "name:asc");
 
-    client.templates.listTemplates(accountId, options);
+    httpClient.templates.listTemplates(accountId, options);
   }
 
   @Test
   public void testListTemplatesProducesTemplateList() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("listTemplates/success.http"));
+    HttpClient httpClient = mockClient(resource("listTemplates/success.http"));
 
     String accountId = "1";
 
-    ListTemplatesResponse response = client.templates.listTemplates(accountId);
+    ListTemplatesResponse response = httpClient.templates.listTemplates(accountId);
 
     List<Template> templates = response.getData();
     assertEquals(2, templates.size());
@@ -73,11 +70,11 @@ public class TemplatesTest extends DnsimpleTestBase {
 
   @Test
   public void testListTemplatesExposesPaginationInfo() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("listTemplates/success.http"));
+    HttpClient httpClient = mockClient(resource("listTemplates/success.http"));
 
     String accountId = "1";
 
-    ListTemplatesResponse response = client.templates.listTemplates(accountId);
+    ListTemplatesResponse response = httpClient.templates.listTemplates(accountId);
 
     Pagination pagination = response.getPagination();
     assertEquals(1, pagination.getCurrentPage().intValue());
@@ -85,12 +82,12 @@ public class TemplatesTest extends DnsimpleTestBase {
 
   @Test
   public void testGetTemplate() throws DnsimpleException, IOException {
-    Client client = mockAndExpectClient("https://api.dnsimple.com/v2/1010/templates/1", HttpMethods.GET, null, resource("getTemplate/success.http"));
+    HttpClient httpClient = mockAndExpectClient("https://api.dnsimple.com/v2/1010/templates/1", HttpMethods.GET, null, resource("getTemplate/success.http"));
 
     String accountId = "1010";
     String templateId = "1";
 
-    GetTemplateResponse response = client.templates.getTemplate(accountId, templateId);
+    GetTemplateResponse response = httpClient.templates.getTemplate(accountId, templateId);
 
     Template template = response.getData();
     assertEquals(1, template.getId().intValue());
@@ -104,12 +101,12 @@ public class TemplatesTest extends DnsimpleTestBase {
 
   @Test(expected=ResourceNotFoundException.class)
   public void testGetTemplateWhenNotFound() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("notfound-template.http"));
+    HttpClient httpClient = mockClient(resource("notfound-template.http"));
 
     String accountId = "1010";
     String templateId = "2";
 
-    client.templates.getTemplate(accountId, templateId);
+    httpClient.templates.getTemplate(accountId, templateId);
   }
 
   @Test
@@ -119,21 +116,21 @@ public class TemplatesTest extends DnsimpleTestBase {
     attributes.put("name", "A Template");
     attributes.put("short_name", "a_template");
 
-    Client client = expectClient("https://api.dnsimple.com/v2/1010/templates", HttpMethods.POST, attributes);
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1010/templates", HttpMethods.POST, attributes);
 
-    client.templates.createTemplate(accountId, attributes);
+    httpClient.templates.createTemplate(accountId, attributes);
   }
 
   @Test
   public void testCreateTemplateProducesTemplate() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("createTemplate/created.http"));
+    HttpClient httpClient = mockClient(resource("createTemplate/created.http"));
 
     String accountId = "1";
     HashMap<String, Object> attributes = new HashMap<String, Object>();
     attributes.put("name", "A Template");
     attributes.put("short_name", "a_template");
 
-    CreateTemplateResponse response = client.templates.createTemplate(accountId, attributes);
+    CreateTemplateResponse response = httpClient.templates.createTemplate(accountId, attributes);
     Template template = response.getData();
     assertEquals(1, template.getId().intValue());
   }
@@ -146,33 +143,33 @@ public class TemplatesTest extends DnsimpleTestBase {
     attributes.put("name", "A Template");
     attributes.put("short_name", "a_template");
 
-    Client client = mockAndExpectClient("https://api.dnsimple.com/v2/1010/templates/1", HttpMethods.PATCH, attributes, resource("updateTemplate/success.http"));
+    HttpClient httpClient = mockAndExpectClient("https://api.dnsimple.com/v2/1010/templates/1", HttpMethods.PATCH, attributes, resource("updateTemplate/success.http"));
 
-    UpdateTemplateResponse response = client.templates.updateTemplate(accountId, templateId, attributes);
+    UpdateTemplateResponse response = httpClient.templates.updateTemplate(accountId, templateId, attributes);
     Template template = response.getData();
     assertEquals(1, template.getId().intValue());
   }
 
   @Test
   public void testDeleteTemplate() throws DnsimpleException, IOException {
-    Client client = mockAndExpectClient("https://api.dnsimple.com/v2/1010/templates/1", HttpMethods.DELETE, resource("deleteTemplate/success.http"));
+    HttpClient httpClient = mockAndExpectClient("https://api.dnsimple.com/v2/1010/templates/1", HttpMethods.DELETE, resource("deleteTemplate/success.http"));
 
     String accountId = "1010";
     String templateId = "1";
 
-    DeleteTemplateResponse response = client.templates.deleteTemplate(accountId, templateId);
+    DeleteTemplateResponse response = httpClient.templates.deleteTemplate(accountId, templateId);
     assertEquals(null, response.getData());
   }
 
   @Test
   public void testApplyTemplate() throws DnsimpleException, IOException {
-    Client client = mockAndExpectClient("https://api.dnsimple.com/v2/1010/domains/example.com/templates/1", HttpMethods.POST, resource("applyTemplate/success.http"));
+    HttpClient httpClient = mockAndExpectClient("https://api.dnsimple.com/v2/1010/domains/example.com/templates/1", HttpMethods.POST, resource("applyTemplate/success.http"));
 
     String accountId = "1010";
     String templateId = "1";
     String domainId = "example.com";
 
-    ApplyTemplateResponse response = client.templates.applyTemplate(accountId, templateId, domainId);
+    ApplyTemplateResponse response = httpClient.templates.applyTemplate(accountId, templateId, domainId);
     assertEquals(null, response.getData());
   }
 }

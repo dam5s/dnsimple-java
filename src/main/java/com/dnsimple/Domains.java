@@ -1,7 +1,6 @@
 package com.dnsimple;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -22,7 +21,6 @@ import com.dnsimple.response.AcceptPushResponse;
 import com.dnsimple.response.RejectPushResponse;
 
 import com.dnsimple.exception.DnsimpleException;
-import com.dnsimple.exception.ResourceNotFoundException;
 
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpResponseException;
@@ -33,10 +31,10 @@ import com.google.api.client.http.HttpResponseException;
  * @see <a href="https://developer.dnsimple.com/v2/domains">https://developer.dnsimple.com/v2/domains</a>
  */
 public class Domains {
-  private Client client;
+  private HttpClient httpClient;
 
-  protected Domains(Client client) {
-    this.client = client;
+  protected Domains(HttpClient httpClient) {
+    this.httpClient = httpClient;
   }
 
   // Domains
@@ -67,8 +65,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public ListDomainsResponse listDomains(String accountId, Map<String,Object> options) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/domains", options);
-    return (ListDomainsResponse)client.parseResponse(response, ListDomainsResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/domains", options);
+    return (ListDomainsResponse) httpClient.parseResponse(response, ListDomainsResponse.class);
   }
 
   /**
@@ -83,8 +81,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public GetDomainResponse getDomain(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/domains/" + domainId);
-    return (GetDomainResponse)client.parseResponse(response, GetDomainResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/domains/" + domainId);
+    return (GetDomainResponse) httpClient.parseResponse(response, GetDomainResponse.class);
   }
 
   /**
@@ -99,8 +97,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public CreateDomainResponse createDomain(String accountId, Map<String,Object> attributes) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/domains", attributes);
-    return (CreateDomainResponse)client.parseResponse(response, CreateDomainResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/domains", attributes);
+    return (CreateDomainResponse) httpClient.parseResponse(response, CreateDomainResponse.class);
   }
 
   /**
@@ -117,8 +115,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public DeleteDomainResponse deleteDomain(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.delete(accountId + "/domains/" + domainId);
-    return (DeleteDomainResponse)client.parseResponse(response, DeleteDomainResponse.class);
+    HttpResponse response = httpClient.delete(accountId + "/domains/" + domainId);
+    return (DeleteDomainResponse) httpClient.parseResponse(response, DeleteDomainResponse.class);
   }
 
   /**
@@ -133,8 +131,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public ResetDomainTokenResponse resetDomainToken(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/domains/" + domainId);
-    return (ResetDomainTokenResponse)client.parseResponse(response, ResetDomainTokenResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/domains/" + domainId);
+    return (ResetDomainTokenResponse) httpClient.parseResponse(response, ResetDomainTokenResponse.class);
   }
 
   // Email Forwards
@@ -167,8 +165,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public ListEmailForwardsResponse listEmailForwards(String accountId, String domainId, HashMap<String,Object> options) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/domains/" + domainId + "/email_forwards", options);
-    return (ListEmailForwardsResponse)client.parseResponse(response, ListEmailForwardsResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/domains/" + domainId + "/email_forwards", options);
+    return (ListEmailForwardsResponse) httpClient.parseResponse(response, ListEmailForwardsResponse.class);
   }
 
   /**
@@ -185,8 +183,8 @@ public class Domains {
    */
   public GetEmailForwardResponse getEmailForward(String accountId, String domainId, String emailForwardId) throws DnsimpleException, IOException {
     try {
-      HttpResponse response = client.get(accountId + "/domains/" + domainId + "/email_forwards/" + emailForwardId);
-      return (GetEmailForwardResponse)client.parseResponse(response, GetEmailForwardResponse.class);
+      HttpResponse response = httpClient.get(accountId + "/domains/" + domainId + "/email_forwards/" + emailForwardId);
+      return (GetEmailForwardResponse) httpClient.parseResponse(response, GetEmailForwardResponse.class);
     } catch(HttpResponseException e) {
       throw DnsimpleException.transformException(e);
     }
@@ -205,8 +203,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public CreateEmailForwardResponse createEmailForward(String accountId, String domainId, Map<String,Object> attributes) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/domains/" + domainId + "/email_forwards", attributes);
-    return (CreateEmailForwardResponse)client.parseResponse(response, CreateEmailForwardResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/domains/" + domainId + "/email_forwards", attributes);
+    return (CreateEmailForwardResponse) httpClient.parseResponse(response, CreateEmailForwardResponse.class);
   }
 
   /**
@@ -224,8 +222,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public DeleteEmailForwardResponse deleteEmailForward(String accountId, String domainId, String emailForwardId) throws DnsimpleException, IOException {
-    HttpResponse response = client.delete(accountId + "/domains/" + domainId + "/email_forwards/" + emailForwardId);
-    return (DeleteEmailForwardResponse)client.parseResponse(response, DeleteEmailForwardResponse.class);
+    HttpResponse response = httpClient.delete(accountId + "/domains/" + domainId + "/email_forwards/" + emailForwardId);
+    return (DeleteEmailForwardResponse) httpClient.parseResponse(response, DeleteEmailForwardResponse.class);
   }
 
   // Pushes
@@ -243,8 +241,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public InitiatePushResponse initiatePush(String accountId, String domainId, Map<String,Object> attributes) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/domains/" + domainId + "/pushes", attributes);
-    return (InitiatePushResponse)client.parseResponse(response, InitiatePushResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/domains/" + domainId + "/pushes", attributes);
+    return (InitiatePushResponse) httpClient.parseResponse(response, InitiatePushResponse.class);
   }
 
   /**
@@ -275,8 +273,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public ListPushesResponse listPushes(String accountId, String domainId, HashMap<String,Object> options) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/domains/" + domainId + "/pushes", options);
-    return (ListPushesResponse)client.parseResponse(response, ListPushesResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/domains/" + domainId + "/pushes", options);
+    return (ListPushesResponse) httpClient.parseResponse(response, ListPushesResponse.class);
   }
 
   /**
@@ -292,8 +290,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public AcceptPushResponse acceptPush(String accountId, String pushId, Map<String,Object> attributes) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/pushes/" + pushId, attributes);
-    return (AcceptPushResponse)client.parseResponse(response, AcceptPushResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/pushes/" + pushId, attributes);
+    return (AcceptPushResponse) httpClient.parseResponse(response, AcceptPushResponse.class);
   }
 
   /**
@@ -308,8 +306,8 @@ public class Domains {
    * @throws IOException Any IO errors
    */
   public RejectPushResponse rejectPush(String accountId, String pushId) throws DnsimpleException, IOException {
-    HttpResponse response = client.delete(accountId + "/pushes/" + pushId);
-    return (RejectPushResponse)client.parseResponse(response, RejectPushResponse.class);
+    HttpResponse response = httpClient.delete(accountId + "/pushes/" + pushId);
+    return (RejectPushResponse) httpClient.parseResponse(response, RejectPushResponse.class);
   }
 
 }

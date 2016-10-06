@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,47 +26,47 @@ public class DomainsTest extends DnsimpleTestBase {
 
   @Test
   public void testListDomainsSupportsPagination() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/domains?page=1");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/domains?page=1");
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("page", 1);
-    client.domains.listDomains(accountId, options);
+    httpClient.domains.listDomains(accountId, options);
   }
 
   @Test
   public void testListDomainsSupportsExtraRequestOptions() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/domains?foo=bar");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/domains?foo=bar");
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("foo", "bar");
-    client.domains.listDomains(accountId, options);
+    httpClient.domains.listDomains(accountId, options);
   }
 
   @Test
   public void testListDomainsSupportsSorting() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/domains?sort=expires_on%3Aasc");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/domains?sort=expires_on%3Aasc");
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("sort", "expires_on:asc");
-    client.domains.listDomains(accountId, options);
+    httpClient.domains.listDomains(accountId, options);
   }
 
   @Test
   public void testListDomainsSupportsFiltering() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/domains?name_like=example");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/domains?name_like=example");
     String accountId = "1";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("filter", new Filter("name_like", "example"));
-    client.domains.listDomains(accountId, options);
+    httpClient.domains.listDomains(accountId, options);
   }
 
   @Test
   public void testListDomainsProducesDomainList() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("listDomains/success.http"));
+    HttpClient httpClient = mockClient(resource("listDomains/success.http"));
 
     String accountId = "1";
 
-    ListDomainsResponse response = client.domains.listDomains(accountId);
+    ListDomainsResponse response = httpClient.domains.listDomains(accountId);
 
     List<Domain> domains = response.getData();
     assertEquals(2, domains.size());
@@ -77,11 +75,11 @@ public class DomainsTest extends DnsimpleTestBase {
 
   @Test
   public void testListDomainsExposesPaginationInfo() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("listDomains/success.http"));
+    HttpClient httpClient = mockClient(resource("listDomains/success.http"));
 
     String accountId = "1";
 
-    ListDomainsResponse response = client.domains.listDomains(accountId);
+    ListDomainsResponse response = httpClient.domains.listDomains(accountId);
 
     Pagination pagination = response.getPagination();
     assertEquals(1, pagination.getCurrentPage().intValue());
@@ -89,12 +87,12 @@ public class DomainsTest extends DnsimpleTestBase {
 
   @Test
   public void testGetDomain() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("getDomain/success.http"));
+    HttpClient httpClient = mockClient(resource("getDomain/success.http"));
 
     String accountId = "1";
     String domainId = "example.com";
 
-    GetDomainResponse response = client.domains.getDomain(accountId, domainId);
+    GetDomainResponse response = httpClient.domains.getDomain(accountId, domainId);
 
     Domain domain = response.getData();
     assertEquals(1, domain.getId().intValue());
@@ -113,12 +111,12 @@ public class DomainsTest extends DnsimpleTestBase {
 
   @Test(expected=ResourceNotFoundException.class)
   public void testGetDomainWhenDomainNotFound() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("notfound-domain.http"));
+    HttpClient httpClient = mockClient(resource("notfound-domain.http"));
 
     String accountId = "1";
     String domainId = "example.com";
 
-    client.domains.getDomain(accountId, domainId);
+    httpClient.domains.getDomain(accountId, domainId);
   }
 
   @Test
@@ -127,43 +125,43 @@ public class DomainsTest extends DnsimpleTestBase {
     HashMap<String, Object> attributes = new HashMap<String, Object>();
     attributes.put("name", "example.com");
 
-    Client client = expectClient("https://api.dnsimple.com/v2/1010/domains", HttpMethods.POST, attributes);
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1010/domains", HttpMethods.POST, attributes);
 
-    client.domains.createDomain(accountId, attributes);
+    httpClient.domains.createDomain(accountId, attributes);
   }
 
   @Test
   public void testCreateDomainProducesDomain() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("createDomain/created.http"));
+    HttpClient httpClient = mockClient(resource("createDomain/created.http"));
 
     String accountId = "1";
     HashMap<String, Object> attributes = new HashMap<String, Object>();
     attributes.put("name", "example.com");
 
-    CreateDomainResponse response = client.domains.createDomain(accountId, attributes);
+    CreateDomainResponse response = httpClient.domains.createDomain(accountId, attributes);
     Domain domain = response.getData();
     assertEquals(1, domain.getId().intValue());
   }
 
   @Test
   public void testDeleteDomain() throws DnsimpleException, IOException {
-    Client client = mockAndExpectClient("https://api.dnsimple.com/v2/1/domains/example.com", HttpMethods.DELETE, resource("deleteDomain/success.http"));
+    HttpClient httpClient = mockAndExpectClient("https://api.dnsimple.com/v2/1/domains/example.com", HttpMethods.DELETE, resource("deleteDomain/success.http"));
 
     String accountId = "1";
     String domainId = "example.com";
 
-    DeleteDomainResponse response = client.domains.deleteDomain(accountId, domainId);
+    DeleteDomainResponse response = httpClient.domains.deleteDomain(accountId, domainId);
     assertEquals(null, response.getData());
   }
 
   @Test
   public void testResetDomainToken() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("resetDomainToken/success.http"));
+    HttpClient httpClient = mockClient(resource("resetDomainToken/success.http"));
 
     String accountId = "1";
     String domainId = "example.com";
 
-    ResetDomainTokenResponse response = client.domains.resetDomainToken(accountId, domainId);
+    ResetDomainTokenResponse response = httpClient.domains.resetDomainToken(accountId, domainId);
     Domain domain = response.getData();
     assertEquals(1, domain.getId().intValue());
   }

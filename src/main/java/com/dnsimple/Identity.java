@@ -13,10 +13,10 @@ import com.google.api.client.http.HttpResponse;
  * @see <a href="https://developer.dnsimple.com/v2/identity">https://developer.dnsimple.com/v2/identity</a>
  */
 public class Identity {
-  private Client client;
+  private HttpClient httpClient;
 
-  protected Identity(Client client) {
-    this.client = client;
+  protected Identity(HttpClient httpClient) {
+    this.httpClient = httpClient;
   }
 
   /**
@@ -29,7 +29,7 @@ public class Identity {
    * @throws IOException Any IO error
    */
   public WhoamiResponse whoami() throws DnsimpleException, IOException {
-    HttpResponse response = client.get("whoami");
-    return (WhoamiResponse)client.parseResponse(response, WhoamiResponse.class);
+    HttpResponse response = httpClient.get("whoami");
+    return (WhoamiResponse) httpClient.parseResponse(response, WhoamiResponse.class);
   }
 }

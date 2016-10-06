@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -25,48 +23,48 @@ public class CertificatesTest extends DnsimpleTestBase {
 
   @Test
   public void testListCertificatesSupportsPagination() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/domains/example.com/certificates?page=1");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/domains/example.com/certificates?page=1");
 
     String accountId = "1";
     String domainId = "example.com";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("page", 1);
 
-    client.certificates.listCertificates(accountId, domainId, options);
+    httpClient.certificates.listCertificates(accountId, domainId, options);
   }
 
   @Test
   public void testListCertificatesSupportsExtraRequestOptions() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/domains/example.com/certificates?foo=bar");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/domains/example.com/certificates?foo=bar");
 
     String accountId = "1";
     String domainId = "example.com";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("foo", "bar");
 
-    client.certificates.listCertificates(accountId, domainId, options);
+    httpClient.certificates.listCertificates(accountId, domainId, options);
   }
 
   @Test
   public void testListCertificatesSupportsSorting() throws DnsimpleException, IOException {
-    Client client = expectClient("https://api.dnsimple.com/v2/1/domains/example.com/certificates?sort=expires_on%3Aasc");
+    HttpClient httpClient = expectClient("https://api.dnsimple.com/v2/1/domains/example.com/certificates?sort=expires_on%3Aasc");
 
     String accountId = "1";
     String domainId = "example.com";
     HashMap<String, Object> options = new HashMap<String, Object>();
     options.put("sort", "expires_on:asc");
 
-    client.certificates.listCertificates(accountId, domainId, options);
+    httpClient.certificates.listCertificates(accountId, domainId, options);
   }
 
   @Test
   public void testListCertificatesProducesCertificateList() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("listCertificates/success.http"));
+    HttpClient httpClient = mockClient(resource("listCertificates/success.http"));
 
     String accountId = "1";
     String domainId = "example.com";
 
-    ListCertificatesResponse response = client.certificates.listCertificates(accountId, domainId);
+    ListCertificatesResponse response = httpClient.certificates.listCertificates(accountId, domainId);
 
     List<Certificate> certificates = response.getData();
     assertEquals(2, certificates.size());
@@ -75,12 +73,12 @@ public class CertificatesTest extends DnsimpleTestBase {
 
   @Test
   public void testListCertificatesExposesPaginationInfo() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("listCertificates/success.http"));
+    HttpClient httpClient = mockClient(resource("listCertificates/success.http"));
 
     String accountId = "1";
     String domainId = "example.com";
 
-    ListCertificatesResponse response = client.certificates.listCertificates(accountId, domainId);
+    ListCertificatesResponse response = httpClient.certificates.listCertificates(accountId, domainId);
 
     Pagination pagination = response.getPagination();
     assertEquals(1, pagination.getCurrentPage().intValue());
@@ -88,13 +86,13 @@ public class CertificatesTest extends DnsimpleTestBase {
 
   @Test
   public void testGetCertificate() throws DnsimpleException, IOException {
-    Client client = mockAndExpectClient("https://api.dnsimple.com/v2/1010/domains/weppos.net/certificates/1", HttpMethods.GET, resource("getCertificate/success.http"));
+    HttpClient httpClient = mockAndExpectClient("https://api.dnsimple.com/v2/1010/domains/weppos.net/certificates/1", HttpMethods.GET, resource("getCertificate/success.http"));
 
     String accountId = "1010";
     String domainId = "weppos.net";
     String certificateId = "1";
 
-    GetCertificateResponse response = client.certificates.getCertificate(accountId, domainId, certificateId);
+    GetCertificateResponse response = httpClient.certificates.getCertificate(accountId, domainId, certificateId);
 
     Certificate certificate = response.getData();
     assertEquals(1, certificate.getId().intValue());
@@ -112,24 +110,24 @@ public class CertificatesTest extends DnsimpleTestBase {
 
   @Test(expected=ResourceNotFoundException.class)
   public void testGetCertificateWhenNotFound() throws DnsimpleException, IOException {
-    Client client = mockClient(resource("notfound-certificate.http"));
+    HttpClient httpClient = mockClient(resource("notfound-certificate.http"));
 
     String accountId = "1";
     String domainId = "weppos.net";
     String certificateId = "2";
 
-    client.certificates.getCertificate(accountId, domainId, certificateId);
+    httpClient.certificates.getCertificate(accountId, domainId, certificateId);
   }
 
   @Test
   public void testDownloadCertificate() throws DnsimpleException, IOException {
-    Client client = mockAndExpectClient("https://api.dnsimple.com/v2/1010/domains/weppos.net/certificates/1/download", HttpMethods.GET, resource("downloadCertificate/success.http"));
+    HttpClient httpClient = mockAndExpectClient("https://api.dnsimple.com/v2/1010/domains/weppos.net/certificates/1/download", HttpMethods.GET, resource("downloadCertificate/success.http"));
 
     String accountId = "1010";
     String domainId = "weppos.net";
     String certificateId = "1";
 
-    DownloadCertificateResponse response = client.certificates.downloadCertificate(accountId, domainId, certificateId);
+    DownloadCertificateResponse response = httpClient.certificates.downloadCertificate(accountId, domainId, certificateId);
 
     CertificateBundle certificateBundle = response.getData();
     assertEquals(null, certificateBundle.getPrivateKey());
@@ -141,13 +139,13 @@ public class CertificatesTest extends DnsimpleTestBase {
 
   @Test
   public void testCertificatePrivateKey() throws DnsimpleException, IOException {
-    Client client = mockAndExpectClient("https://api.dnsimple.com/v2/1010/domains/weppos.net/certificates/1/private_key", HttpMethods.GET, resource("getCertificatePrivateKey/success.http"));
+    HttpClient httpClient = mockAndExpectClient("https://api.dnsimple.com/v2/1010/domains/weppos.net/certificates/1/private_key", HttpMethods.GET, resource("getCertificatePrivateKey/success.http"));
 
     String accountId = "1010";
     String domainId = "weppos.net";
     String certificateId = "1";
 
-    GetCertificatePrivateKeyResponse response = client.certificates.getCertificatePrivateKey(accountId, domainId, certificateId);
+    GetCertificatePrivateKeyResponse response = httpClient.certificates.getCertificatePrivateKey(accountId, domainId, certificateId);
     assertEquals("-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAtzCcMfWoQRt5AMEY0HUb2GaraL1GsWOo6YXdPfe+YDvtnmDw\n23NcoTX7VSeCgU9M3RKs19AsCJcRNTLJ2dmDrAuyCTud9YTAaXQcTOLUhtO8T8+9\nAFVIva2OmAlKCR5saBW3JaRxW7V2aHEd/d1ss1CvNOO7jNppc9NwGSnDHcn3rqNv\n/U3MaU0gpJJRqsKkvcLU6IHJGgxyQ6AbpwJDIqBnzkjHu2IuhGEbRuMjyWLA2qts\njyVlfPotDxUdVouUQpz7dGHUFrLR7ma8QAYuOfl1ZMyrc901HGMa7zwbnFWurs3f\ned7vAosTRZIjnn72/3Wo7L9RiMB+vwr3NX7c9QIDAQABAoIBAEQx32OlzK34GTKT\nr7Yicmw7xEGofIGa1Q2h3Lut13whsxKLif5X0rrcyqRnoeibacS+qXXrJolIG4rP\nTl8/3wmUDQHs5J+6fJqFM+fXZUCP4AFiFzzhgsPBsVyd0KbWYYrZ0qU7s0ttoRe+\nTGjuHgIe3ip1QKNtx2Xr50YmytDydknmro79J5Gfrub1l2iA8SDm1eBrQ4SFaNQ2\nU709pHeSwX8pTihUX2Zy0ifpr0O1wYQjGLneMoG4rrNQJG/z6iUdhYczwwt1kDRQ\n4WkM2sovFOyxbBfoCQ3Gy/eem7OXfjNKUe47DAVLnPkKbqL/3Lo9FD7kcB8K87Ap\nr/vYrl0CgYEA413RAk7571w5dM+VftrdbFZ+Yi1OPhUshlPSehavro8kMGDEG5Ts\n74wEz2X3cfMxauMpMrBk/XnUCZ20AnWQClK73RB5fzPw5XNv473Tt/AFmt7eLOzl\nOcYrhpEHegtsD/ZaljlGtPqsjQAL9Ijhao03m1cGB1+uxI7FgacdckcCgYEAzkKP\n6xu9+WqOol73cnlYPS3sSZssyUF+eqWSzq2YJGRmfr1fbdtHqAS1ZbyC5fZVNZYV\nml1vfXi2LDcU0qS04JazurVyQr2rJZMTlCWVET1vhik7Y87wgCkLwKpbwamPDmlI\n9GY+fLNEa4yfAOOpvpTJpenUScxyKWH2cdYFOOMCgYBhrJnvffINC/d64Pp+BpP8\nyKN+lav5K6t3AWd4H2rVeJS5W7ijiLTIq8QdPNayUyE1o+S8695WrhGTF/aO3+ZD\nKQufikZHiQ7B43d7xL7BVBF0WK3lateGnEVyh7dIjMOdj92Wj4B6mv2pjQ2VvX/p\nAEWVLCtg24/+zL64VgxmXQKBgGosyXj1Zu2ldJcQ28AJxup3YVLilkNje4AXC2No\n6RCSvlAvm5gpcNGE2vvr9lX6YBKdl7FGt8WXBe/sysNEFfgmm45ZKOBCUn+dHk78\nqaeeQHKHdxMBy7utZWdgSqt+ZS299NgaacA3Z9kVIiSLDS4V2VeW7riujXXP/9TJ\nnxaRAoGBAMWXOfNVzfTyrKff6gvDWH+hqNICLyzvkEn2utNY9Q6WwqGuY9fvP/4Z\nXzc48AOBzUr8OeA4sHKJ79sJirOiWHNfD1swtvyVzsFZb6moiNwD3Ce/FzYCa3lQ\nU8blTH/uqpR2pSC6whzJ/lnSdqHUqhyp00000000000000000000\n-----END RSA PRIVATE KEY-----\n", response.getData().getPrivateKey());
   }
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,7 +16,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.HttpMethods;
 import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.http.LowLevelHttpResponse;
-import com.google.api.client.json.Json;
 import com.google.api.client.json.JsonParser;
 import com.google.api.client.json.GenericJson;
 import com.google.api.client.json.gson.GsonFactory;
@@ -31,13 +29,13 @@ import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 public abstract class DnsimpleTestBase {
 
   /**
-   * Return a Client that is mocked to return the given HTTP response.
+   * Return a HttpClient that is mocked to return the given HTTP response.
    *
    * @param httpResponse The full HTTP response data
-   * @return The Client instance
+   * @return The HttpClient instance
    */
-  public Client mockClient(final String httpResponse) {
-    Client client = new Client();
+  public HttpClient mockClient(final String httpResponse) {
+    HttpClient httpClient = new HttpClient();
 
     HttpTransport transport = new MockHttpTransport() {
       @Override
@@ -52,42 +50,42 @@ public abstract class DnsimpleTestBase {
       }
     };
 
-    client.setTransport(transport);
+    httpClient.setTransport(transport);
 
-    return client;
+    return httpClient;
   }
 
   /**
-   * Return a Client that is configured to expect a specific URL.
+   * Return a HttpClient that is configured to expect a specific URL.
    *
    * @param expectedUrl The URL string that is expected
-   * @return The Client instance
+   * @return The HttpClient instance
    */
-  public Client expectClient(final String expectedUrl) {
+  public HttpClient expectClient(final String expectedUrl) {
     return expectClient(expectedUrl, HttpMethods.GET);
   }
 
   /**
-   * Return a Client that is configured to expect a specific URL and HTTP method.
+   * Return a HttpClient that is configured to expect a specific URL and HTTP method.
    *
    * @param expectedUrl The URL string that is expected
    * @param expectedMethod The HTTP method String that is expected
-   * @return The Client instance
+   * @return The HttpClient instance
    */
-  public Client expectClient(final String expectedUrl, final String expectedMethod) {
+  public HttpClient expectClient(final String expectedUrl, final String expectedMethod) {
     return expectClient(expectedUrl, expectedMethod, new Object());
   }
 
   /**
-   * Return a Client that is configured to expect a specific URL, HTTP method, and request attributes.
+   * Return a HttpClient that is configured to expect a specific URL, HTTP method, and request attributes.
    *
    * @param expectedUrl The URL string that is expected
    * @param expectedMethod The HTTP method String that is expected
    * @param expectedAttributes A map of values as attributes
-   * @return The Client instance
+   * @return The HttpClient instance
    */
-  public Client expectClient(final String expectedUrl, final String expectedMethod, final Object expectedAttributes) {
-    Client client = new Client();
+  public HttpClient expectClient(final String expectedUrl, final String expectedMethod, final Object expectedAttributes) {
+    HttpClient httpClient = new HttpClient();
 
     HttpTransport transport = new MockHttpTransport() {
       @Override
@@ -111,36 +109,36 @@ public abstract class DnsimpleTestBase {
       }
     };
 
-    client.setTransport(transport);
+    httpClient.setTransport(transport);
 
-    return client;
+    return httpClient;
   }
 
   /**
-   * Returns a Client that is configured to expect certain request values and return
+   * Returns a HttpClient that is configured to expect certain request values and return
    * the given HTTP response.
    *
    * @param expectedUrl The URL string that is expected
    * @param expectedMethod The HTTP method String that is expected
    * @param httpResponse The full HTTP response data
-   * @return The Client instance
+   * @return The HttpClient instance
    */
-  public Client mockAndExpectClient(final String expectedUrl, final String expectedMethod, final String httpResponse) {
+  public HttpClient mockAndExpectClient(final String expectedUrl, final String expectedMethod, final String httpResponse) {
     return mockAndExpectClient(expectedUrl, expectedMethod, new Object(), httpResponse);
   }
 
   /**
-   * Returns a Client that is configured to expect certain request values and return
+   * Returns a HttpClient that is configured to expect certain request values and return
    * the given HTTP response.
    *
    * @param expectedUrl The URL string that is expected
    * @param expectedMethod The HTTP method String that is expected
    * @param expectedAttributes A map of values as attributes
    * @param httpResponse The full HTTP response data
-   * @return The Client instance
+   * @return The HttpClient instance
    */
-  public Client mockAndExpectClient(final String expectedUrl, final String expectedMethod, final Object expectedAttributes, final String httpResponse) {
-    Client client = new Client();
+  public HttpClient mockAndExpectClient(final String expectedUrl, final String expectedMethod, final Object expectedAttributes, final String httpResponse) {
+    HttpClient httpClient = new HttpClient();
 
     HttpTransport transport = new MockHttpTransport() {
       @Override
@@ -169,9 +167,9 @@ public abstract class DnsimpleTestBase {
       }
     };
 
-    client.setTransport(transport);
+    httpClient.setTransport(transport);
 
-    return client;
+    return httpClient;
   }
 
   /**

@@ -1,7 +1,6 @@
 package com.dnsimple;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.dnsimple.response.ListAccountsResponse;
 import com.dnsimple.exception.DnsimpleException;
@@ -14,10 +13,10 @@ import com.google.api.client.http.HttpResponse;
  * @see <a href="https://developer.dnsimple.com/v2/accounts">https://developer.dnsimple.com/v2/accounts</a>
  */
 public class Accounts {
-  private Client client;
+  private HttpClient httpClient;
 
-  protected Accounts(Client client) {
-    this.client = client;
+  protected Accounts(HttpClient httpClient) {
+    this.httpClient = httpClient;
   }
 
   /**
@@ -30,7 +29,7 @@ public class Accounts {
    * @throws IOException Any IO errors
    */
   public ListAccountsResponse listAccounts() throws DnsimpleException, IOException {
-    HttpResponse response = client.get("/accounts");
-    return (ListAccountsResponse)client.parseResponse(response, ListAccountsResponse.class);
+    HttpResponse response = httpClient.get("/accounts");
+    return (ListAccountsResponse) httpClient.parseResponse(response, ListAccountsResponse.class);
   }
 }

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Map.Entry.*;
 
 import com.dnsimple.exception.DnsimpleException;
 
@@ -21,10 +20,10 @@ import io.mikael.urlbuilder.UrlBuilder;
  * @see <a href="https://developer.dnsimple.com/v2/oauth">https://developer.dnsimple.com/v2/oauth</a>
  */
 public class Oauth {
-  private Client client;
+  private HttpClient httpClient;
 
-  protected Oauth(Client client) {
-    this.client = client;
+  protected Oauth(HttpClient httpClient) {
+    this.httpClient = httpClient;
   }
 
   /**
@@ -34,8 +33,8 @@ public class Oauth {
    * @see <a href="https://developer.dnsimple.com/v2/oauth">https://developer.dnsimple.com/v2/oauth</a>
    *
    * @param code The authorization code
-   * @param clientId The client ID
-   * @param clientSecret The client secret
+   * @param clientId The httpClient ID
+   * @param clientSecret The httpClient secret
    * @return The OauthToken instance
    * @throws DnsimpleException Any API error
    * @throws IOException Any IO error
@@ -51,8 +50,8 @@ public class Oauth {
    * @see <a href="https://developer.dnsimple.com/v2/oauth">https://developer.dnsimple.com/v2/oauth</a>
    *
    * @param code The authorization code
-   * @param clientId The client ID
-   * @param clientSecret The client secret
+   * @param clientId The httpClient ID
+   * @param clientSecret The httpClient secret
    * @param options Map of options
    * @return The OauthToken instance
    * @throws DnsimpleException Any API error
@@ -73,7 +72,7 @@ public class Oauth {
       attributes.put("redirect_uri", options.remove("redirect_uri"));
     }
 
-    HttpResponse response = client.post("oauth/access_token", attributes);
+    HttpResponse response = httpClient.post("oauth/access_token", attributes);
     InputStream in = response.getContent();
     if (in == null) {
       throw new DnsimpleException("Response was empty", null, response.getStatusCode());
@@ -92,7 +91,7 @@ public class Oauth {
    *
    * @see <a href="https://developer.dnsimple.com/v2/oauth/">https://developer.dnsimple.com/v2/oauth/</a>
    *
-   * @param clientId The client ID of the OAuth app in DNSimple
+   * @param clientId The httpClient ID of the OAuth app in DNSimple
    * @return The authorize URL String
    */
   public String authorizeUrl(String clientId) {
@@ -104,7 +103,7 @@ public class Oauth {
    *
    * @see <a href="https://developer.dnsimple.com/v2/oauth/">https://developer.dnsimple.com/v2/oauth/</a>
    *
-   * @param clientId The client ID of the OAuth app in DNSimple
+   * @param clientId The httpClient ID of the OAuth app in DNSimple
    * @param options A Map of options to include as parameters in the generated URL
    * @return The authorize URL string
    */

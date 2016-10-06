@@ -2,7 +2,6 @@ package com.dnsimple;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.List;
 import java.util.HashMap;
 
 import com.dnsimple.response.ListServicesResponse;
@@ -21,10 +20,10 @@ import com.google.api.client.http.HttpResponse;
  * @see <a href="https://developer.dnsimple.com/v2/services">https://developer.dnsimple.com/v2/services</a>
  */
 public class Services {
-  private Client client;
+  private HttpClient httpClient;
 
-  protected Services(Client client) {
-    this.client = client;
+  protected Services(HttpClient httpClient) {
+    this.httpClient = httpClient;
   }
 
   /**
@@ -51,8 +50,8 @@ public class Services {
    * @throws IOException Any IO errors
    */
   public ListServicesResponse listServices(Map<String, Object> options) throws DnsimpleException, IOException {
-    HttpResponse response = client.get("services", options);
-    return (ListServicesResponse)client.parseResponse(response, ListServicesResponse.class);
+    HttpResponse response = httpClient.get("services", options);
+    return (ListServicesResponse) httpClient.parseResponse(response, ListServicesResponse.class);
   }
 
   /**
@@ -66,8 +65,8 @@ public class Services {
    * @throws IOException Any IO errors
    */
   public GetServiceResponse getService(String serviceId) throws DnsimpleException, IOException {
-    HttpResponse response = client.get("services/" + serviceId);
-    return (GetServiceResponse)client.parseResponse(response, GetServiceResponse.class);
+    HttpResponse response = httpClient.get("services/" + serviceId);
+    return (GetServiceResponse) httpClient.parseResponse(response, GetServiceResponse.class);
   }
 
   /**
@@ -98,8 +97,8 @@ public class Services {
    * @throws IOException Any IO errors
    */
   public AppliedServicesResponse appliedServices(String accountId, String domainId, Map<String, Object> options) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/domains/" + domainId + "/services", options);
-    return (AppliedServicesResponse)client.parseResponse(response, AppliedServicesResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/domains/" + domainId + "/services", options);
+    return (AppliedServicesResponse) httpClient.parseResponse(response, AppliedServicesResponse.class);
   }
 
   /**
@@ -116,8 +115,8 @@ public class Services {
    * @throws IOException Any IO errors
    */
   public ApplyServiceResponse applyService(String accountId, String domainId, String serviceId, Map<String, Object> settings) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/domains/" + domainId + "/services/" + serviceId, settings);
-    return (ApplyServiceResponse)client.parseResponse(response, ApplyServiceResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/domains/" + domainId + "/services/" + serviceId, settings);
+    return (ApplyServiceResponse) httpClient.parseResponse(response, ApplyServiceResponse.class);
   }
 
   /**
@@ -133,7 +132,7 @@ public class Services {
    * @throws IOException Any IO errors
    */
   public UnapplyServiceResponse unapplyService(String accountId, String domainId, String serviceId) throws DnsimpleException, IOException {
-    HttpResponse response = client.delete(accountId + "/domains/" + domainId + "/services/" + serviceId);
-    return (UnapplyServiceResponse)client.parseResponse(response, UnapplyServiceResponse.class);
+    HttpResponse response = httpClient.delete(accountId + "/domains/" + domainId + "/services/" + serviceId);
+    return (UnapplyServiceResponse) httpClient.parseResponse(response, UnapplyServiceResponse.class);
   }
 }

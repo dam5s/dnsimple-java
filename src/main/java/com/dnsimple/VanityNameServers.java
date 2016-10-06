@@ -1,9 +1,6 @@
 package com.dnsimple;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 import com.dnsimple.response.EnableVanityNameServersResponse;
 import com.dnsimple.response.DisableVanityNameServersResponse;
@@ -18,10 +15,10 @@ import com.google.api.client.http.HttpResponse;
  * @see <a href="https://developer.dnsimple.com/v2/domains/vanity">https://developer.dnsimple.com/v2/domains/vanity</a>
  */
 public class VanityNameServers {
-  private Client client;
+  private HttpClient httpClient;
 
-  protected VanityNameServers(Client client) {
-    this.client = client;
+  protected VanityNameServers(HttpClient httpClient) {
+    this.httpClient = httpClient;
   }
 
   /**
@@ -35,8 +32,8 @@ public class VanityNameServers {
    * @throws IOException Any IO error
    */
   public EnableVanityNameServersResponse enableVanityNameServers(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.put(accountId + "/vanity/" + domainId);
-    return (EnableVanityNameServersResponse)client.parseResponse(response, EnableVanityNameServersResponse.class);
+    HttpResponse response = httpClient.put(accountId + "/vanity/" + domainId);
+    return (EnableVanityNameServersResponse) httpClient.parseResponse(response, EnableVanityNameServersResponse.class);
   }
 
   /**
@@ -50,7 +47,7 @@ public class VanityNameServers {
    * @throws IOException Any IO error
    */
   public DisableVanityNameServersResponse disableVanityNameServers(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.delete(accountId + "/vanity/" + domainId);
-    return (DisableVanityNameServersResponse)client.parseResponse(response, DisableVanityNameServersResponse.class);
+    HttpResponse response = httpClient.delete(accountId + "/vanity/" + domainId);
+    return (DisableVanityNameServersResponse) httpClient.parseResponse(response, DisableVanityNameServersResponse.class);
   }
 }

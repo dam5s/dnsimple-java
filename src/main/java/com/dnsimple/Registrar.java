@@ -3,7 +3,6 @@ package com.dnsimple;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import com.dnsimple.response.CheckDomainResponse;
 import com.dnsimple.response.RegisterDomainResponse;
@@ -30,10 +29,10 @@ import com.google.api.client.http.HttpResponse;
  * @see <a href="https://developer.dnsimple.com/v2/registrar">https://developer.dnsimple.com/v2/registrar</a>
  */
 public class Registrar {
-  private Client client;
+  private HttpClient httpClient;
 
-  protected Registrar(Client client) {
-    this.client = client;
+  protected Registrar(HttpClient httpClient) {
+    this.httpClient = httpClient;
   }
 
   /**
@@ -48,8 +47,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public CheckDomainResponse checkDomain(String accountId, String domainName) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/registrar/domains/" + domainName + "/check");
-    return (CheckDomainResponse)client.parseResponse(response, CheckDomainResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/registrar/domains/" + domainName + "/check");
+    return (CheckDomainResponse) httpClient.parseResponse(response, CheckDomainResponse.class);
   }
 
   /**
@@ -65,8 +64,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public RegisterDomainResponse registerDomain(String accountId, String domainName, Map<String,Object> attributes) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/registrar/domains/" + domainName + "/register", attributes);
-    return (RegisterDomainResponse)client.parseResponse(response, RegisterDomainResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/registrar/domains/" + domainName + "/register", attributes);
+    return (RegisterDomainResponse) httpClient.parseResponse(response, RegisterDomainResponse.class);
   }
 
   /**
@@ -82,8 +81,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public RenewDomainResponse renewDomain(String accountId, String domainId, Map<String,Object> attributes) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/registrar/domains/" + domainId + "/renewal", attributes);
-    return (RenewDomainResponse)client.parseResponse(response, RenewDomainResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/registrar/domains/" + domainId + "/renewal", attributes);
+    return (RenewDomainResponse) httpClient.parseResponse(response, RenewDomainResponse.class);
   }
 
   /**
@@ -99,8 +98,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public TransferDomainResponse transferDomain(String accountId, String domainId, Map<String,Object> attributes) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/registrar/domains/" + domainId + "/transfer", attributes);
-    return (TransferDomainResponse)client.parseResponse(response, TransferDomainResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/registrar/domains/" + domainId + "/transfer", attributes);
+    return (TransferDomainResponse) httpClient.parseResponse(response, TransferDomainResponse.class);
   }
 
   /**
@@ -115,8 +114,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public TransferDomainOutResponse transferDomainOut(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/registrar/domains/" + domainId + "/transfer_out");
-    return (TransferDomainOutResponse)client.parseResponse(response, TransferDomainOutResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/registrar/domains/" + domainId + "/transfer_out");
+    return (TransferDomainOutResponse) httpClient.parseResponse(response, TransferDomainOutResponse.class);
   }
 
   /**
@@ -131,8 +130,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public EnableAutoRenewalResponse enableAutoRenewal(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.put(accountId + "/registrar/domains/" + domainId + "/auto_renewal");
-    return (EnableAutoRenewalResponse)client.parseResponse(response, EnableAutoRenewalResponse.class);
+    HttpResponse response = httpClient.put(accountId + "/registrar/domains/" + domainId + "/auto_renewal");
+    return (EnableAutoRenewalResponse) httpClient.parseResponse(response, EnableAutoRenewalResponse.class);
   }
 
   /**
@@ -147,8 +146,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public DisableAutoRenewalResponse disableAutoRenewal(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.delete(accountId + "/registrar/domains/" + domainId + "/auto_renewal");
-    return (DisableAutoRenewalResponse)client.parseResponse(response, DisableAutoRenewalResponse.class);
+    HttpResponse response = httpClient.delete(accountId + "/registrar/domains/" + domainId + "/auto_renewal");
+    return (DisableAutoRenewalResponse) httpClient.parseResponse(response, DisableAutoRenewalResponse.class);
   }
 
   /**
@@ -163,8 +162,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public GetWhoisPrivacyResponse getWhoisPrivacy(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/registrar/domains/" + domainId + "/whois_privacy");
-    return (GetWhoisPrivacyResponse)client.parseResponse(response, GetWhoisPrivacyResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/registrar/domains/" + domainId + "/whois_privacy");
+    return (GetWhoisPrivacyResponse) httpClient.parseResponse(response, GetWhoisPrivacyResponse.class);
   }
 
    /**
@@ -179,8 +178,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public EnableWhoisPrivacyResponse enableWhoisPrivacy(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.put(accountId + "/registrar/domains/" + domainId + "/whois_privacy");
-    return (EnableWhoisPrivacyResponse)client.parseResponse(response, EnableWhoisPrivacyResponse.class);
+    HttpResponse response = httpClient.put(accountId + "/registrar/domains/" + domainId + "/whois_privacy");
+    return (EnableWhoisPrivacyResponse) httpClient.parseResponse(response, EnableWhoisPrivacyResponse.class);
   }
 
   /**
@@ -195,8 +194,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public DisableWhoisPrivacyResponse disableWhoisPrivacy(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.delete(accountId + "/registrar/domains/" + domainId + "/whois_privacy");
-    return (DisableWhoisPrivacyResponse)client.parseResponse(response, DisableWhoisPrivacyResponse.class);
+    HttpResponse response = httpClient.delete(accountId + "/registrar/domains/" + domainId + "/whois_privacy");
+    return (DisableWhoisPrivacyResponse) httpClient.parseResponse(response, DisableWhoisPrivacyResponse.class);
   }
 
   /**
@@ -211,8 +210,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public GetDomainDelegationResponse getDomainDelegation(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/registrar/domains/" + domainId + "/delegation");
-    return (GetDomainDelegationResponse)client.parseResponse(response, GetDomainDelegationResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/registrar/domains/" + domainId + "/delegation");
+    return (GetDomainDelegationResponse) httpClient.parseResponse(response, GetDomainDelegationResponse.class);
   }
 
   /**
@@ -228,8 +227,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public ChangeDomainDelegationResponse changeDomainDelegation(String accountId, String domainId, List<String> nameServerNames) throws DnsimpleException, IOException {
-    HttpResponse response = client.put(accountId + "/registrar/domains/" + domainId + "/delegation", nameServerNames);
-    return (ChangeDomainDelegationResponse)client.parseResponse(response, ChangeDomainDelegationResponse.class);
+    HttpResponse response = httpClient.put(accountId + "/registrar/domains/" + domainId + "/delegation", nameServerNames);
+    return (ChangeDomainDelegationResponse) httpClient.parseResponse(response, ChangeDomainDelegationResponse.class);
   }
 
   /**
@@ -245,8 +244,8 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public ChangeDomainDelegationToVanityResponse changeDomainDelegationToVanity(String accountId, String domainId, List<String> nameServerNames) throws DnsimpleException, IOException {
-    HttpResponse response = client.put(accountId + "/registrar/domains/" + domainId + "/delegation/vanity", nameServerNames);
-    return (ChangeDomainDelegationToVanityResponse)client.parseResponse(response, ChangeDomainDelegationToVanityResponse.class);
+    HttpResponse response = httpClient.put(accountId + "/registrar/domains/" + domainId + "/delegation/vanity", nameServerNames);
+    return (ChangeDomainDelegationToVanityResponse) httpClient.parseResponse(response, ChangeDomainDelegationToVanityResponse.class);
   }
 
   /**
@@ -261,7 +260,7 @@ public class Registrar {
    * @throws IOException Any IO error
    */
   public ChangeDomainDelegationFromVanityResponse changeDomainDelegationFromVanity(String accountId, String domainId) throws DnsimpleException, IOException {
-    HttpResponse response = client.delete(accountId + "/registrar/domains/" + domainId + "/delegation/vanity");
-    return (ChangeDomainDelegationFromVanityResponse)client.parseResponse(response, ChangeDomainDelegationFromVanityResponse.class);
+    HttpResponse response = httpClient.delete(accountId + "/registrar/domains/" + domainId + "/delegation/vanity");
+    return (ChangeDomainDelegationFromVanityResponse) httpClient.parseResponse(response, ChangeDomainDelegationFromVanityResponse.class);
   }
 }

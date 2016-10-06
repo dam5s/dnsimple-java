@@ -1,9 +1,7 @@
 package com.dnsimple;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import com.dnsimple.response.ListContactsResponse;
 import com.dnsimple.response.GetContactResponse;
@@ -12,10 +10,8 @@ import com.dnsimple.response.UpdateContactResponse;
 import com.dnsimple.response.DeleteContactResponse;
 
 import com.dnsimple.exception.DnsimpleException;
-import com.dnsimple.exception.ResourceNotFoundException;
 
 import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpResponseException;
 
 /**
  * Provides access to the DNSimple Contacts API.
@@ -23,10 +19,10 @@ import com.google.api.client.http.HttpResponseException;
  * @see <a href="https://developer.dnsimple.com/v2/contacts">https://developer.dnsimple.com/v2/contacts</a>
  */
 public class Contacts {
-  private Client client;
+  private HttpClient httpClient;
 
-  protected Contacts(Client client) {
-    this.client = client;
+  protected Contacts(HttpClient httpClient) {
+    this.httpClient = httpClient;
   }
 
   /**
@@ -55,8 +51,8 @@ public class Contacts {
    * @throws IOException Any IO errors
    */
   public ListContactsResponse listContacts(String accountId, Map<String,Object> options) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/contacts", options);
-    return (ListContactsResponse)client.parseResponse(response, ListContactsResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/contacts", options);
+    return (ListContactsResponse) httpClient.parseResponse(response, ListContactsResponse.class);
   }
 
   /**
@@ -71,8 +67,8 @@ public class Contacts {
    * @throws IOException Any IO errors
    */
   public GetContactResponse getContact(String accountId, String contactId) throws DnsimpleException, IOException {
-    HttpResponse response = client.get(accountId + "/contacts/" + contactId);
-    return (GetContactResponse)client.parseResponse(response, GetContactResponse.class);
+    HttpResponse response = httpClient.get(accountId + "/contacts/" + contactId);
+    return (GetContactResponse) httpClient.parseResponse(response, GetContactResponse.class);
   }
 
   /**
@@ -87,8 +83,8 @@ public class Contacts {
    * @throws IOException Any IO errors
    */
   public CreateContactResponse createContact(String accountId, Map<String,Object> attributes) throws DnsimpleException, IOException {
-    HttpResponse response = client.post(accountId + "/contacts", attributes);
-    return (CreateContactResponse)client.parseResponse(response, CreateContactResponse.class);
+    HttpResponse response = httpClient.post(accountId + "/contacts", attributes);
+    return (CreateContactResponse) httpClient.parseResponse(response, CreateContactResponse.class);
   }
 
   /**
@@ -104,8 +100,8 @@ public class Contacts {
    * @throws IOException Any IO errors
    */
   public UpdateContactResponse updateContact(String accountId, String contactId, Map<String,Object> attributes) throws DnsimpleException, IOException {
-    HttpResponse response = client.patch(accountId + "/contacts/" + contactId, attributes);
-    return (UpdateContactResponse)client.parseResponse(response, UpdateContactResponse.class);
+    HttpResponse response = httpClient.patch(accountId + "/contacts/" + contactId, attributes);
+    return (UpdateContactResponse) httpClient.parseResponse(response, UpdateContactResponse.class);
   }
 
   /**
@@ -120,7 +116,7 @@ public class Contacts {
    * @throws IOException Any IO errors
    */
   public DeleteContactResponse deleteContact(String accountId, String contactId) throws DnsimpleException, IOException {
-    HttpResponse response = client.delete(accountId + "/contacts/" + contactId);
-    return (DeleteContactResponse)client.parseResponse(response, DeleteContactResponse.class);
+    HttpResponse response = httpClient.delete(accountId + "/contacts/" + contactId);
+    return (DeleteContactResponse) httpClient.parseResponse(response, DeleteContactResponse.class);
   }
 }

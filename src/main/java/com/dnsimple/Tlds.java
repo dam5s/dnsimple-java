@@ -8,7 +8,6 @@ import com.dnsimple.response.GetTldResponse;
 import com.dnsimple.response.GetTldExtendedAttributesResponse;
 
 import com.dnsimple.exception.DnsimpleException;
-import com.dnsimple.exception.ResourceNotFoundException;
 
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpResponseException;
@@ -20,10 +19,10 @@ import com.google.api.client.http.HttpResponseException;
  */
 public class Tlds {
 
-  private Client client;
+  private HttpClient httpClient;
 
-  protected Tlds(Client client) {
-    this.client = client;
+  protected Tlds(HttpClient httpClient) {
+    this.httpClient = httpClient;
   }
 
   /**
@@ -50,8 +49,8 @@ public class Tlds {
    * @throws IOException Any IO errors
    */
   public ListTldsResponse listTlds(Map<String,Object> options) throws DnsimpleException, IOException {
-    HttpResponse response = client.get("tlds", options);
-    return (ListTldsResponse)client.parseResponse(response, ListTldsResponse.class);
+    HttpResponse response = httpClient.get("tlds", options);
+    return (ListTldsResponse) httpClient.parseResponse(response, ListTldsResponse.class);
   }
 
   /**
@@ -66,8 +65,8 @@ public class Tlds {
    */
   public GetTldResponse getTld(String tld) throws DnsimpleException, IOException {
     try {
-      HttpResponse response = client.get("tlds/" + tld);
-      return (GetTldResponse)client.parseResponse(response, GetTldResponse.class);
+      HttpResponse response = httpClient.get("tlds/" + tld);
+      return (GetTldResponse) httpClient.parseResponse(response, GetTldResponse.class);
     } catch(HttpResponseException e) {
       throw DnsimpleException.transformException(e);
     }
@@ -84,8 +83,8 @@ public class Tlds {
    * @throws IOException Any IO errors
    */
   public GetTldExtendedAttributesResponse getTldExtendedAttributes(String tld) throws DnsimpleException, IOException {
-    HttpResponse response = client.get("tlds/" + tld + "/extended_attributes");
-    return (GetTldExtendedAttributesResponse)client.parseResponse(response, GetTldExtendedAttributesResponse.class);
+    HttpResponse response = httpClient.get("tlds/" + tld + "/extended_attributes");
+    return (GetTldExtendedAttributesResponse) httpClient.parseResponse(response, GetTldExtendedAttributesResponse.class);
   }
 
 }
